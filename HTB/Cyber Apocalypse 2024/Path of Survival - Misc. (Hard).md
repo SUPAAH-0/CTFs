@@ -668,6 +668,7 @@ except UnboundLocalError:
 ## The code, as promised
 
 294 lines of pure beauty /s
+
 It is slightly improved upon, from what I used in the event (namely the impossible generation resolver), but I tested it in the `After Party` event and it works a charm.
 This code does not include the snake visual (as it is for the solve itself).
 
