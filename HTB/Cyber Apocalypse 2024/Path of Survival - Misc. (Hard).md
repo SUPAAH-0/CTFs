@@ -8,13 +8,14 @@
 
 This challenge could have been solved by simply visiting the docker `HOST:PORT`, in your browser of choice, and following the `/rules`:
 
-![[Pasted image 20240314104614.png]]
+![Path of Survival /rules](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/Pasted%20image%2020240314104614.png?raw=true)
 
 You use either the WASD or arrow keys, to go from the tile with the player (which we are assuming is out of ammunition), to the tile with the much less advanced crossbow (which we know to be the difference between life and death).
 
 Take this example map:
 `Time left: 10`
-![[Pasted image 20240314105232.png]]
+
+![Example Map](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/Pasted%20image%2020240314105232.png)
 
 Our objective is to travel, from the middle-right tile, to the bottom-left tile.
 If we look at the "Time Costs" section of the rules, we can see that heading down-left-left will cost us a total of:
@@ -29,7 +30,8 @@ m -> p = 2
 As a time cost of 8 is less time than the 10 that we are given for this level, and there are no cliffs, geysers, or empty tiles to take into consideration, this is a valid path.
 
 Heading back to the game and pressing `S A A`, we are greeted with this alert:
-![[Pasted image 20240314110514.png]]
+
+![Weapon Found Alert](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/Pasted%20image%2020240314110514.png)
 
 Follow the logic of `/rules` 100 times and you are given the flag.
 
@@ -161,7 +163,7 @@ def print_map(map_state):
 		print()
 ```
 
-![[Pasted image 20240314123901.png]]
+![Printed Map](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/Pasted%20image%2020240314123901.png)
 
 
 ## Recursion Hell
@@ -490,7 +492,9 @@ def post_directions_to_server(directions_to_upload):
 ```
 
 The printed responses will be in this format, giving us the `new_pos` and new `time` that we have remaining (which our method ignores, as we used a local map state):
-![[Pasted image 20240314151124.png]]
+
+![Printed Responses](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/Pasted%20image%2020240314151124.png)
+
 The important response for us is the final one of the sequence. When all levels have been solved, this is where the flag will be displayed. At the end of the for loop, this is the one that will still be stored as `response`. So, we can just return this value
 
 As there are 100 levels, we call the `main()` function 100 times. As we do not need the iteration number, `_` suffices for the variable name:
@@ -502,7 +506,9 @@ for _ in range(100):
 ## Impossible generations
 
 That's right, they exist. I received confirmation from the author and have come across them a couple of times. They will terminate before the `snake_number` is hit and return False, with an `UnboundLocalError`:
-![[Pasted image 20240314153005.png]]
+
+![Impossible Generation](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/Pasted%20image%2020240314153005.png)
+
 (and then the `UnboundLocalError`)
 
 To combat this, we try/except the line causing the `UnboundLocalError`, returning the last response, if successful. If there is an impossible generation, we regenerate the game (starting again from 0 completed levels) by sending a `get` request to `/regenerate`, and tell the code looping `main()` that it needs to continue looping:
@@ -525,7 +531,8 @@ while "flag" not in last_response:
 	last_response = main()
 print(last_response["flag"])
 ```
-![[Pasted image 20240314163931.png]]
+
+![Printed Flag](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/Pasted%20image%2020240314163931.png)
 
 
 ## But where is the snek?
@@ -534,7 +541,8 @@ That's it. Just let it run and your snakes come to life.
 
 I have written another script, to use the paths that the snake(s) take, and output a visual.
 The script outputs an animated `.gif` file:
-![[snake_1.gif]]
+
+![Snek (Snake) GIF](https://github.com/SUPAAH-0/CTFs/blob/main/HTB/Cyber%20Apocalypse%202024/snake_1.gif)
 
 In order to visualise the snek, we need to collect our map states & paths and send them off to another function (I have separated this into its own python module).
 
